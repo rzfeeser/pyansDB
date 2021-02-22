@@ -1,5 +1,6 @@
 # pyansDB
 Learning to interact GitHub (our SCM) with git
 
+Learning about Python
 
-Writing in some changes
+Learning about Ansible
