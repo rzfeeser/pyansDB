@@ -2,6 +2,10 @@
 # An object of Flask class is our WSGI application
 from flask import Flask
 from flask import jsonify
+from flask import request
+
+import yaml
+import requests
 
 # Flask constructor takes the name of current
 # module (__name__) as argument
@@ -16,7 +20,19 @@ def hello_world():
 
 @app.route("/astros.json", methods = ["GET"])
 def astros():
-   return jsonify({"message": "success", "number": 7, "people": [{"craft": "ISS", "name": "Sergey Ryzhikov"}, {"craft": "ISS", "name": "Kate Rubins"}, {"craft": "ISS", "name": "Sergey Kud-Sverchkov"}, {"craft": "ISS", "name": "Mike Hopkins"}, {"craft": "ISS", "name": "Victor Glover"}, {"craft": "ISS", "name": "Shannon Walker"}, {"craft": "ISS", "name": "Soichi Noguchi"}]})
+    return jsonify({"message": "success", "number": 7, "people": [{"craft": "ISS", "name": "Sergey Ryzhikov"}, {"craft": "ISS", "name": "Kate Rubins"}, {"craft": "ISS", "name": "Sergey Kud-Sverchkov"}, {"craft": "ISS", "name": "Mike Hopkins"}, {"craft": "ISS", "name": "Victor Glover"}, {"craft": "ISS", "name": "Shannon Walker"}, {"craft": "ISS", "name": "Soichi Noguchi"}]})
+
+
+@app.route("/jsontoyaml", methods = ["GET", "POST"])
+def jsontoyaml():
+    if request.method == "GET":
+        urllookup = 'https://www.anapioficeandfire.com/api/books'
+    elif request.method == "POST":
+        urllookup = request.form['url']
+    r = requests.get(urllookup)
+    with open("converted.yaml", "w") as cy:
+        cy.write(yaml.dump(r.json()))
+    return "Conversion complete!"
 
 
 if __name__ == "__main__":
