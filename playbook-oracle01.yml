@@ -1,0 +1,31 @@
+---
+- name: Gathering facts on OracleXE
+  hosts: localhost
+  connection: local
+
+  # these vars are same vars that we we had to define when we used
+  # import cx_Oracle with our python scripts
+  vars:
+    oraclehost: 10.5.19.206
+    oracleport: 51521
+    oracleservice: XEPDB1   #orcl
+    oracleuser: system
+    oraclepassword: mysecurepassword
+    oracle_env:
+      ORACLE_HOME: /home/student/oracle/instantclient_21_1/
+      LD_LIBRARY_PATH: /home/student/oracle/instantclient_21_1/
+  
+  tasks:
+    - name: gather database facts
+      oracle_facts:
+        hostname: "{{ oraclehost }}"
+        port: "{{ oracleport }}"
+        service_name: "{{ oracleservice }}"
+        user: "{{ oracleuser }}"
+        password: "{{ oraclepassword }}"
+      register: dbfacts      # save the facts that we discover
+    
+    - name: display the gathered facts
+      debug:
+        var: dbfacts
+

@@ -3,6 +3,7 @@
    Created: 2021-02-22
    Purpose: Interact Python with APIs'''
 
+# python3 -m pip install requests
 import requests
 
 # define our constants / globals

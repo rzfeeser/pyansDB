@@ -1,0 +1,11 @@
+sudo apt install build-essential unzip python3-dev libaio-dev -y
+mkdir ~/oracle                                                                                                               
+cd ~/oracle                                                                                                                  
+wget -q https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basic-linux.x64-21.1.0.0.0.zip     
+wget -q https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basiclite-linux.x64-21.1.0.0.0.zip 
+unzip -n instantclient-basic-linux.x64-21.1.0.0.0.zip                                                                        
+unzip -n instantclient-basiclite-linux.x64-21.1.0.0.0.zip                                                                    
+cd ~                                                                                                                          
+export ORACLE_HOME=~/oracle/instantclient_21_1/                                                                              
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME                                                                         
+echo $ORACLE_HOME | sudo tee /etc/ld.so.conf.d/oracle.conf
