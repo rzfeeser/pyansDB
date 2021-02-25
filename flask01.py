@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 # An object of Flask class is our WSGI application
+import os
+
 from flask import Flask
 from flask import jsonify
 from flask import request
@@ -23,9 +25,16 @@ def astros():
     return jsonify({"message": "success", "number": 7, "people": [{"craft": "ISS", "name": "Sergey Ryzhikov"}, {"craft": "ISS", "name": "Kate Rubins"}, {"craft": "ISS", "name": "Sergey Kud-Sverchkov"}, {"craft": "ISS", "name": "Mike Hopkins"}, {"craft": "ISS", "name": "Victor Glover"}, {"craft": "ISS", "name": "Shannon Walker"}, {"craft": "ISS", "name": "Soichi Noguchi"}]})
 
 
-@app.route("/jsontoyaml", methods = ["GET", "POST"])
+# creates a file called 'converted.yaml' with GET or POST
+# also can REMOVE a file 'converted.yaml' with DELETE
+@app.route("/jsontoyaml", methods = ["GET", "POST", "DELETE"])
 def jsontoyaml():
-    if request.method == "GET":
+    if request.method == "DELETE":
+        # delete the file if it exists
+        if os.path.exists("converted.yaml"):
+            os.remove("converted.yaml")
+        return "File deleted!"
+    elif request.method == "GET":
         urllookup = 'https://www.anapioficeandfire.com/api/books'
     elif request.method == "POST":
         urllookup = request.form['url']
