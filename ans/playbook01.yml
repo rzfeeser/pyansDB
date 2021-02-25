@@ -1,0 +1,19 @@
+---
+- name: Installing app packages on remote linux hosts
+  hosts: marketingteam    # marketingteam is a GROUP we need to define (outside of this file... typically within the "inventory")
+  connection: ssh         # connection: ssh is a DEFAULT setting
+  gather_facts: yes       # gather_facts: yes is a DEFAULT setting (this runs a script called setup.py that performs an "audit" on the "hosts")
+  no_log: no              # boolean to control if we want to supress standard output (what is logged)
+
+  tasks:
+
+          - name: Install a few packages on remote linux hosts
+            apt:
+                    name: apache2
+                    state: present
+            become: yes
+
+          - name: Create a directory within the home folder of all users we connect with
+            file:
+                    path: ~/ansiblemade/
+                    state: directory
