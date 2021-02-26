@@ -1,0 +1,17 @@
+---
+- name: Using our ansible custom module
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+        - name: Test with a message
+          mongodb_audit:
+                  ipofmdb: 127.0.0.1
+                  portofmdb: "27017"
+          register: results
+
+        - name: show the results
+          debug:
+                  var: results
+

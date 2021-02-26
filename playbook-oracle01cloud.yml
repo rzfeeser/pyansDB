@@ -1,0 +1,81 @@
+---
+- name: Autonomous Database usage example
+  hosts: localhost
+
+  collections:
+    - oracle.oci
+
+  connection: local
+
+  vars_files:
+          - ~/oci.creds
+
+  tasks:
+    - name: All code in this BLOCK relates to running the Autonomous Database
+      block:
+        - name: Create a new Autonomous Database
+          oci_database_autonomous_database:
+              compartment_id: "{{ compartment_ocid }}"
+              cpu_core_count: "{{ cpu_core_count }}"
+              display_name: "{{ display_name }}"
+              admin_password: "{{ admin_password }}"
+              db_name: "{{ db_name }}"
+              data_storage_size_in_tbs: "{{ data_storage_size_in_tbs }}"
+              license_model: "{{ license_model }}"
+              state: 'present'
+          register: result
+
+        - name: Create a new variable "autonomous_database_id"
+          set_fact:
+             autonomous_database_id: "{{ result.autonomous_database.id }}"
+
+        - name: The following will cause a FAIL if it is not evaluated as "TRUE"
+          assert:
+            that:
+              - result.autonomous_database.lifecycle_state == "AVAILABLE"
+
+    # List Autonomous Databases filtered by Display Name
+        - name: List All Autonomous Databases in a compartment, filtered by Display Name
+          oci_database_autonomous_database_facts:
+             compartment_id: "{{ compartment_ocid }}"
+             display_name: '{{ display_name }}'
+          register: result
+
+        - name: Assert that specified Autonomous Database is listed
+          assert:
+             that:
+                - result.autonomous_databases[0].display_name == display_name
+
+    # Stop Autonomous Databases
+        - name: Stop an Autonomous Database
+          oci_database_autonomous_database_actions:
+             autonomous_database_id: "{{ autonomous_database_id }}"
+             action: 'stop'
+          register: result
+
+        - name: Assert that specified Autonomous Database is stopped
+          assert:
+             that:
+                - result.autonomous_database.lifecycle_state == 'STOPPED'
+
+    # Start Autonomous Databases
+        - name: Start Autonomous Database
+          oci_database_autonomous_database_actions:
+             autonomous_database_id: "{{ autonomous_database_id }}"
+             action: 'start'
+          register: result
+
+        - name: Assert that specified Autonomous Database is started and available
+          assert:
+             that:
+                - result.autonomous_database.lifecycle_state == 'AVAILABLE'
+
+    # Get a specific Autonomous Database
+        - name: Get a specific Autonomous Database's facts
+          oci_database_autonomous_database_facts:
+             autonomous_database_id: "{{ autonomous_database_id }}"
+          register: result
+
+        - name: Display all of the facts collected about the DB
+          debug: # print facts retrieved about the Autonomous Database
+              msg: "{{result}}"

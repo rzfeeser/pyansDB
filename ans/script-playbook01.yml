@@ -1,0 +1,20 @@
+---
+- name: Push a script and run it
+  hosts: localhost
+
+  tasks:
+  - name: This task will only run if the file created by this script does not exist
+    script: /home/student/pyansDB/pyhello.py
+    args:
+      creates: /home/student/stopper.txt
+      executable: python3
+    register: results
+
+  - name: Print all of the results to the screen
+    debug:
+      msg: "Here is what came back: {{ results }}"
+
+  - name: When the key results.stdout exists print results.stdout to the screen
+    debug:
+      msg: "The output of the Python is {{ results.stdout }}"
+    when: results.stdout is defined
