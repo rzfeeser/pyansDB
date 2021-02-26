@@ -1,0 +1,40 @@
+---
+- name: Setup apache2 server
+  hosts: fry
+  gather_facts: no
+  become: yes
+
+
+  tasks:
+          - debug:
+                  msg: "hello world!"
+            tags:
+                    - jollyroger
+
+          - block:
+                - name: Install / Ensure Compliance of Apache Webservice
+                  import_tasks: apache2.yml
+                  notify: restart apache
+
+                - name: Run a role solution
+                  include_role:
+                          name: buildoracledb
+
+            rescue:
+                - name: REMOVE all work, because we messed up the above^^^
+                  # the below will WORK because the file will only be searched for
+                  # IF a rescue occurs
+                  include_tasks: remove_apache2.yml
+                  # the below would FAIL because the file NEEDS TO BE PRESENT when
+                  # ansible-playbook command is executed
+                  # import_tasks: remove_apache2.yml
+
+                - name: fail out
+                  fail:
+                          msg: The playbook failed, but the work was rolled back.
+
+  handlers:
+          - name: Restart service httpd, in all cases
+            service:
+                name: apache2
+                state: restarted

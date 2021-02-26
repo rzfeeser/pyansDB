@@ -1,0 +1,6 @@
+---
+# handlers file for /home/student/pyansDB/ans/roles/deploy_webserver
+- name: Restart service httpd, in all cases
+  service:
+      name: apache2
+      state: restarted

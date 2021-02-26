@@ -1,0 +1,5 @@
+---
+# tasks file for /home/student/pyansDB/ans/roles/deploy_webserver
+- name: Install / Ensure Compliance of Apache Webservice
+  import_tasks: apache2.yml
+  notify: restart apache
